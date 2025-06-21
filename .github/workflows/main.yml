@@ -19,16 +19,20 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name:  Install dependencies
+      - name: Set up virtual environment
         run: |
+          python -m venv venv                # Create virtual environment
+          source venv/bin/activate           # Activate venv (Linux/macOS syntax)
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r requirements.txt    # Install dependencies in venv
+          pip install allure-pytest          # Ensure Allure adapter is installed
 
-      - name:  Run Pytest and collect Allure results
+      - name: Run Pytest and collect Allure results
         run: |
-          python -m pytest --alluredir=Reports || true  # Don't stop if tests fail
+          source venv/bin/activate           # Activate venv
+          python -m pytest --alluredir=Reports || true  # Run tests and collect Allure results
 
-      - name:  Generate Allure Report
+      - name: Generate Allure Report
         uses: simple-elf/allure-report-action@master
         if: always()
         with:
@@ -37,10 +41,10 @@ jobs:
 
       - name: Serve Allure Report
         run: |
-          allure serve Reports || true  # Don't stop if report generation fails
+          source venv/bin/activate           # Activate venv
+          allure serve Reports || true       # Serve the Allure report (for debugging)
 
-
-      - name:  Upload Allure Report as Artifact
+      - name: Upload Allure Report as Artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
