@@ -7,6 +7,7 @@ import os
 from Utilities.ReadProperties import ReadConfig
 
 
+
 @pytest.fixture(scope="session")
 def driver():
     browser = ReadConfig.get_browser()
