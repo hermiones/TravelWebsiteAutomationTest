@@ -1,20 +1,30 @@
-import os
-import pytest
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+import tempfile
 from selenium import webdriver
-from Utilities.ReadProperties import ReadConfig  # Adjust the import path as needed
-
+import pytest
+import os
+from Utilities.ReadProperties import ReadConfig
 
 
 @pytest.fixture(scope="session")
 def driver():
     browser = ReadConfig.get_browser()
     if browser.lower() == "chrome":
-        driver = webdriver.Chrome()
+        options = Options()
+        options.add_argument("--headless")  # Run in headless mode
+        options.add_argument("--no-sandbox")  # Recommended for CI
+        options.add_argument("--disable-dev-shm-usage")  # Recommended for CI
+        options.add_argument(f"--user-data-dir={tempfile.mkdtemp()}")  # Avoid profile reuse issues
+
+        driver = webdriver.Chrome(options=options)
         driver.maximize_window()
     else:
         raise Exception(f"Browser {browser} not supported.")
+    
     yield driver
     driver.quit()
+
 
 
 Path_Screenshot = ReadConfig.get_screenshot_dir()
