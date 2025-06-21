@@ -15,68 +15,39 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      # Stage 1: Checkout
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v3
-        continue-on-error: true
 
-      # Stage 2: Setup
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-        continue-on-error: true
 
-      - name: Set up virtual environment
+      - name: Install dependencies
         run: |
-          python -m venv venv                # Create virtual environment
-          source venv/bin/activate           # Activate venv (Linux/macOS syntax)
           python -m pip install --upgrade pip
-          pip install -r requirements.txt    # Install dependencies in venv
-          pip install allure-pytest          # Ensure Allure adapter is installed
-        continue-on-error: true
+          pip install -r requirements.txt
+          pip install allure-pytest
 
-      # Stage 3: Test Execution
-      - name: Run Pytest and collect Allure results
+      - name: Run tests and collect Allure results
         run: |
-          source venv/bin/activate           # Activate venv
-          python -m pytest --alluredir=Reports || true  # Run tests and collect Allure results
-        # Do not set continue-on-error here so test failures are reported as failures
+          pytest --alluredir=Reports
 
-      # Stage 3.5: Generate Allure HTML Report
-      - name: Install Allure CLI and Generate Allure HTML Report
+      - name: Install Allure CLI and single-file plugin, generate single HTML report
         run: |
           wget https://github.com/allure-framework/allure2/releases/download/2.27.0/allure-2.27.0.tgz
           tar -xzf allure-2.27.0.tgz
           sudo mv allure-2.27.0/bin/allure /usr/local/bin/
-          allure --version
-          allure generate Reports -o Reports/html --clean
-        continue-on-error: true
+          allure plugin install allure-plugin-singlefile
+          allure generate Reports -o Reports/html --clean --single-file
 
-      # Stage 4: Reporting
-      - name: Publish Allure Report to GitHub Pages
+      - name: Upload Allure HTML to GitHub Pages
         uses: actions/upload-pages-artifact@v3
         with:
           path: Reports/html
-        continue-on-error: true
 
       - name: Deploy to GitHub Pages
-        id: deployment
         uses: actions/deploy-pages@v3
-        continue-on-error: true
 
-      # Stage 5: Announce Report URL
-      - name: Check your test report here
-        if: always()
-        run: |
-          echo "::notice title=Allure Report URL::Check your test report here: https://hermiones.github.io/TravelWebsiteAutomationTest/"
-        continue-on-error: true
-
-      # Stage 6: Artifact Upload
-      - name: Upload Allure Report as Artifact
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: allure-report
-          path: Reports
-        continue-on-error: true
+      - name: Show Allure Report URL
+        run: echo "::notice title=Allure Report URL::https://hermiones.github.io/TravelWebsiteAutomationTest/"
