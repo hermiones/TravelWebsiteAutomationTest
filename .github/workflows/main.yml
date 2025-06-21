@@ -41,7 +41,7 @@ jobs:
         run: |
           source venv/bin/activate           # Activate venv
           python -m pytest --alluredir=Reports || true  # Run tests and collect Allure results
-          allure generate --single-file Reports\index.html 
+          allure generate --single-file Reports\index.html || true
         # Do not set continue-on-error here so test failures are reported as failures
 
       - name: Move single HTML report to docs
