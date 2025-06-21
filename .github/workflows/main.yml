@@ -37,12 +37,18 @@ jobs:
         continue-on-error: true
 
       # Stage 3: Test Execution
+      - name: Install Allure CLI and single-file plugin
+        run: |
+          wget https://github.com/allure-framework/allure2/releases/download/2.27.0/allure-2.27.0.tgz
+          tar -xzf allure-2.27.0.tgz
+          sudo mv allure-2.27.0/bin/allure /usr/local/bin/
+          allure plugin install allure-plugin-singlefile
+
       - name: Run Pytest and collect Allure results
         run: |
           source venv/bin/activate           # Activate venv
           python -m pytest --alluredir=Reports || true  # Run tests and collect Allure results
-          allure generate --single-file Reports\index.html || true
-        # Do not set continue-on-error here so test failures are reported as failures
+          allure generate --single-file Reports/index.html || true
 
       - name: Move single HTML report to docs
         run: |
