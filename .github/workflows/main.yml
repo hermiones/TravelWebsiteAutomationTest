@@ -42,19 +42,22 @@ jobs:
         # Do not set continue-on-error here so test failures are reported as failures
 
       # Stage 4: Reporting
-      - name: Generate & Publish Allure Report
-        uses: simple-elf/allure-report-action@master
-        if: always()
+      - name: Publish Allure Report to GitHub Pages
+        uses: actions/upload-pages-artifact@v3
         with:
-          allure_results: Reports
-          gh_pages: true
+          path: Reports
+        continue-on-error: true
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v3
         continue-on-error: true
 
       # Stage 5: Announce Report URL
       - name: Check your test report here
         if: always()
         run: |
-          echo "::notice title=Allure Report URL::Check your test report here: https://hermiones.github.io/hermiones/TravelWebsiteAutomationTest/"
+          echo "::notice title=Allure Report URL::Check your test report here: https://hermiones.github.io/TravelWebsiteAutomationTest/"
         continue-on-error: true
 
       # Stage 6: Artifact Upload
