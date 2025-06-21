@@ -1,0 +1,9 @@
+.github
+Reports
+.venv
+__pycache__
+*/__pycache__
+.pytest_cache
+.gitignores
+*.pytest_caches
+*.pyc
