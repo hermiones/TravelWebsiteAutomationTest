@@ -43,7 +43,7 @@ jobs:
 
       # Stage 4: Reporting
       - name: Generate & Publish Allure Report
-        uses: allure-actions/allure-report-action@v2
+        uses: simple-elf/allure-report-action@master
         if: always()
         with:
           allure_results: Reports
