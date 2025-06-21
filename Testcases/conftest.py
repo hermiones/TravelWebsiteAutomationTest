@@ -4,6 +4,7 @@ from selenium import webdriver
 from Utilities.ReadProperties import ReadConfig  # Adjust the import path as needed
 
 
+
 @pytest.fixture(scope="session")
 def driver():
     browser = ReadConfig.get_browser()
