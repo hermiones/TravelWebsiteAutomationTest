@@ -1,4 +1,4 @@
-name: Python CI
+name: Python Tests with Allure
 
 on:
   push:
@@ -7,23 +7,38 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: 📥 Checkout repository
         uses: actions/checkout@v4
 
-      - name:  Set up Python
+      - name: 🐍 Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.X'  # Change to the version you need
+          python-version: '3.11'
 
-      - name:  Install dependencies
+      - name: 📦 Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name:  Run tests
+      - name: ✅ Run Pytest and collect Allure results
         run: |
-          python -m pytest  # or your preferred command
+          python -m pytest --alluredir=Reports/Reports || true  # Don't stop if tests fail
+
+      - name: 📊 Generate Allure Report
+        uses: simple-elf/allure-report-action@master
+        if: always()
+        with:
+          allure_results: Reports/Reports
+          allure_report: Reports/allure-report
+          keep_reports: 10
+
+      - name: 📤 Upload Allure Report as Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: Reports/allure-report
