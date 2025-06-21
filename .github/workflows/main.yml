@@ -26,19 +26,23 @@ jobs:
 
       - name:  Run Pytest and collect Allure results
         run: |
-          python -m pytest --alluredir=Reports/Reports || true  # Don't stop if tests fail
+          python -m pytest --alluredir=Reports || true  # Don't stop if tests fail
 
       - name:  Generate Allure Report
         uses: simple-elf/allure-report-action@master
         if: always()
         with:
-          allure_results: Reports/Reports
-          allure_report: Reports/allure-report
-          keep_reports: 10
+          allure_results: Reports
+          allure_report: Reports
+
+      - name: Serve Allure Report
+        run: |
+          allure serve Reports || true  # Don't stop if report generation fails
+
 
       - name:  Upload Allure Report as Artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: allure-report
-          path: Reports/allure-report
+          path: Reports
