@@ -26,4 +26,4 @@ jobs:
 
       - name:  Run tests
         run: |
-          pytest  # or your preferred command
+          python -m pytest  # or your preferred command
