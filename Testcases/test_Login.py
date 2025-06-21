@@ -21,7 +21,7 @@ def test_log2(driver):
     driver.get(ReadConfig.get_base_url())
     driver.find_element(By.XPATH, "//a[contains(text(),'home')]").click()
     login_page = LoginPage(driver)
-    login_page.login("incorrect@example.com", "incorrect_passwyyord")
+    login_page.login(ReadConfig.get_incorrect_email(), ReadConfig.get_incorrect_password())
     assert "You are logged in!" not in driver.page_source
 
 
@@ -30,7 +30,7 @@ def test_log3(driver):
     driver.get(ReadConfig.get_base_url())
     driver.find_element(By.XPATH, "//a[contains(text(),'home')]").click()
     login_page = LoginPage(driver)
-    login_page.login("", "")
+    login_page.login(ReadConfig.get_blank_email(), ReadConfig.get_blank_password())
     # Optionally, check for error message or alert
     # alert = WebDriverWait(driver, 10).until(EC.alert_is_present())
     # alert_text = alert.text
@@ -49,7 +49,7 @@ def test_log5(driver):
     driver.get(ReadConfig.get_base_url())
     driver.find_element(By.XPATH, "//a[contains(text(),'home')]").click()
     login_page = LoginPage(driver)
-    login_page.login(ReadConfig.get_username(), "wrongpassword")
+    login_page.login(ReadConfig.get_username(), ReadConfig.get_incorrect_password())
     assert "You are logged in!" not in driver.page_source
 
 
@@ -58,7 +58,7 @@ def test_log6(driver):
     driver.get(ReadConfig.get_base_url())
     driver.find_element(By.XPATH, "//a[contains(text(),'home')]").click()
     login_page = LoginPage(driver)
-    login_page.login("", ReadConfig.get_password())
+    login_page.login(ReadConfig.get_blank_email(), ReadConfig.get_password())
     assert "You are logged in!" not in driver.page_source
 
 
@@ -67,7 +67,7 @@ def test_log7(driver):
     driver.get(ReadConfig.get_base_url())
     driver.find_element(By.XPATH, "//a[contains(text(),'home')]").click()
     login_page = LoginPage(driver)
-    login_page.login("invalidemail", ReadConfig.get_password())
+    login_page.login(ReadConfig.get_invalid_email(), ReadConfig.get_password())
     assert "You are logged in!" not in driver.page_source
 
 
@@ -76,5 +76,5 @@ def test_log8(driver):
     driver.get(ReadConfig.get_base_url())
     driver.find_element(By.XPATH, "//a[contains(text(),'home')]").click()
     login_page = LoginPage(driver)
-    login_page.login("test@example.com", "")
+    login_page.login(ReadConfig.get_test_email(), ReadConfig.get_blank_password())
     assert "You are logged in!" not in driver.page_source

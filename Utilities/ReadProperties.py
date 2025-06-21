@@ -23,5 +23,29 @@ class ReadConfig:
         return ReadConfig.config.get('LOGIN', 'password')
 
     @staticmethod
+    def get_incorrect_email():
+        return ReadConfig.config.get('LOGIN', 'incorrect_email')
+
+    @staticmethod
+    def get_incorrect_password():
+        return ReadConfig.config.get('LOGIN', 'incorrect_password')
+
+    @staticmethod
+    def get_blank_email():
+        return ReadConfig.config.get('LOGIN', 'blank_email', fallback='')
+
+    @staticmethod
+    def get_blank_password():
+        return ReadConfig.config.get('LOGIN', 'blank_password', fallback='')
+
+    @staticmethod
+    def get_invalid_email():
+        return ReadConfig.config.get('LOGIN', 'invalid_email', fallback='invalidemail')
+
+    @staticmethod
+    def get_test_email():
+        return ReadConfig.config.get('LOGIN', 'test_email', fallback='test@example.com')
+
+    @staticmethod
     def get_screenshot_dir():
         return ReadConfig.config.get('PATHS', 'screenshot_dir')

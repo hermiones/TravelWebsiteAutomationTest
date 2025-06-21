@@ -9,11 +9,12 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-
     steps:
+      # Stage 1: Checkout
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
+      # Stage 2: Setup
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -27,11 +28,13 @@ jobs:
           pip install -r requirements.txt    # Install dependencies in venv
           pip install allure-pytest          # Ensure Allure adapter is installed
 
+      # Stage 3: Test Execution
       - name: Run Pytest and collect Allure results
         run: |
           source venv/bin/activate           # Activate venv
           python -m pytest --alluredir=Reports || true  # Run tests and collect Allure results
 
+      # Stage 4: Reporting
       - name: Generate Allure Report
         uses: simple-elf/allure-report-action@master
         if: always()
@@ -44,6 +47,7 @@ jobs:
           source venv/bin/activate           # Activate venv
           allure serve Reports || true       # Serve the Allure report (for debugging)
 
+      # Stage 5: Artifact Upload
       - name: Upload Allure Report as Artifact
         if: always()
         uses: actions/upload-artifact@v4
