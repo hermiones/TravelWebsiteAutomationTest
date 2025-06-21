@@ -41,11 +41,17 @@ jobs:
           python -m pytest --alluredir=Reports || true  # Run tests and collect Allure results
         # Do not set continue-on-error here so test failures are reported as failures
 
+      # Stage 3.5: Generate Allure HTML Report
+      - name: Generate Allure HTML Report
+        run: |
+          allure generate Reports -o Reports/html --clean
+        continue-on-error: true
+
       # Stage 4: Reporting
       - name: Publish Allure Report to GitHub Pages
         uses: actions/upload-pages-artifact@v3
         with:
-          path: Reports
+          path: Reports/html
         continue-on-error: true
 
       - name: Deploy to GitHub Pages
