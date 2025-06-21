@@ -8,6 +8,8 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 jobs:
   test:
@@ -42,8 +44,12 @@ jobs:
         # Do not set continue-on-error here so test failures are reported as failures
 
       # Stage 3.5: Generate Allure HTML Report
-      - name: Generate Allure HTML Report
+      - name: Install Allure CLI and Generate Allure HTML Report
         run: |
+          wget https://github.com/allure-framework/allure2/releases/download/2.27.0/allure-2.27.0.tgz
+          tar -xzf allure-2.27.0.tgz
+          sudo mv allure-2.27.0/bin/allure /usr/local/bin/
+          allure --version
           allure generate Reports -o Reports/html --clean
         continue-on-error: true
 
