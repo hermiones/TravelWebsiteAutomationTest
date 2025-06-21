@@ -40,5 +40,5 @@ jobs:
       - name: Run Pytest and collect Allure results
         run: |
           source venv/bin/activate           # Activate venv
-          python -m pytest --alluredir=Reports || true  # Run tests and collect Allure results
+          python -m pytest --alluredir=Reports ; allure generate --single-file Reports\index.html || true  # Run tests and collect Allure results
         # Do not set continue-on-error here so test failures are reported as failures
