@@ -2,6 +2,7 @@ from selenium.webdriver.support.select import Select
 from Pages.FlightBookingPage import FlightBookingPage
 from Utilities.ReadProperties import ReadConfig
 from Testcases.conftest import save_ss
+import pytest
 
 
 def test_FB1(driver):
@@ -47,5 +48,28 @@ def test_FB7(driver):
     airlines = booking_page.get_lufthansa_text()
     booking_page.select_lufthansa()
     assert airlines in driver.page_source
+
+
+@pytest.mark.parametrize(
+    "departure,destination,name,address,city",
+    [
+        (dep, arr, pname, paddr, pcity)
+        for dep in ReadConfig.get_departure_cities()
+        for arr in ReadConfig.get_arrival_cities()
+        for pname in ReadConfig.get_passenger_names()
+        for paddr in ReadConfig.get_passenger_addresses()
+        for pcity in ReadConfig.get_passenger_cities()
+    ][:50]  # Limit to 50 combinations for demonstration
+)
+def test_bulk_flight_booking_cases(driver, departure, destination, name, address, city):
+    driver.get(ReadConfig.get_base_url())
+    booking_page = FlightBookingPage(driver)
+    booking_page.select_departure(departure)
+    booking_page.select_destination(destination)
+    booking_page.click_find_flights()
+    booking_page.choose_flight()
+    booking_page.fill_passenger_details(name, address, city)
+    booking_page.click_purchase()
+    # Optionally, assert booking confirmation
 
 

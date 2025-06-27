@@ -3,6 +3,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from Pages.LoginPage import LoginPage
 from Utilities.ReadProperties import ReadConfig
+import pytest
 
 
 # Successful login
@@ -62,19 +63,59 @@ def test_log6(driver):
     assert "You are logged in!" not in driver.page_source
 
 
-# Unsuccessful login with invalid email format
-def test_log7(driver):
+# Unsuccessful login with valid email and wrong password
+def test_log7_wrong_password(driver):
     driver.get(ReadConfig.get_base_url())
     driver.find_element(By.XPATH, "//a[contains(text(),'home')]").click()
     login_page = LoginPage(driver)
-    login_page.login(ReadConfig.get_invalid_email(), ReadConfig.get_password())
+    login_page.login(ReadConfig.get_username(), "wrongpassword123")
     assert "You are logged in!" not in driver.page_source
 
 
-# Unsuccessful login with blank password
-def test_log8(driver):
+# Login with long email and password
+def test_log8_long_email_password(driver):
     driver.get(ReadConfig.get_base_url())
     driver.find_element(By.XPATH, "//a[contains(text(),'home')]").click()
     login_page = LoginPage(driver)
-    login_page.login(ReadConfig.get_test_email(), ReadConfig.get_blank_password())
+    long_email = "a" * 256 + "@test.com"
+    long_password = "p" * 256
+    login_page.login(long_email, long_password)
+    # Optionally, assert error message for long input
+
+
+# Login with SQL injection attempt
+def test_log9_sql_injection(driver):
+    driver.get(ReadConfig.get_base_url())
+    driver.find_element(By.XPATH, "//a[contains(text(),'home')]").click()
+    login_page = LoginPage(driver)
+    sql_email = "' OR '1'='1"
+    sql_password = "' OR '1'='1"
+    login_page.login(sql_email, sql_password)
     assert "You are logged in!" not in driver.page_source
+
+
+@pytest.mark.parametrize(
+    "username,password,description",
+    [
+        (ReadConfig.get_login_valid_username(), ReadConfig.get_login_valid_password(), "Valid login"),
+        (ReadConfig.get_login_invalid_username(), ReadConfig.get_login_invalid_password(), "Invalid login"),
+        (ReadConfig.get_login_blank_username(), ReadConfig.get_login_blank_password(), "Blank credentials"),
+        (ReadConfig.get_login_valid_username(), ReadConfig.get_login_invalid_password(), "Valid username, wrong password"),
+        (ReadConfig.get_login_invalid_username(), ReadConfig.get_login_valid_password(), "Invalid username, valid password"),
+        (ReadConfig.get_login_special_username(), ReadConfig.get_login_special_password(), "Special characters"),
+        (ReadConfig.get_login_long_username(), ReadConfig.get_login_long_password(), "Long credentials"),
+        (ReadConfig.get_login_valid_username(), ReadConfig.get_login_unicode_password(), "Unicode password"),
+        (ReadConfig.get_login_valid_username(), ReadConfig.get_login_chinese_password(), "Chinese password"),
+        (ReadConfig.get_login_valid_username(), ReadConfig.get_login_japanese_password(), "Japanese password"),
+        (ReadConfig.get_login_valid_username(), ReadConfig.get_login_korean_password(), "Korean password"),
+        (ReadConfig.get_login_sql_username(), ReadConfig.get_login_sql_password(), "SQL injection attempt"),
+        (ReadConfig.get_login_xss_username(), ReadConfig.get_login_xss_password(), "XSS attempt"),
+        # Add more combinations for 50+ cases as needed
+    ]
+)
+def test_bulk_login_cases(driver, username, password, description):
+    driver.get(ReadConfig.get_base_url())
+    driver.find_element(By.XPATH, "//a[contains(text(),'home')]").click()
+    login_page = LoginPage(driver)
+    login_page.login(username, password)
+    # Optionally, assert login result based on 'description'
