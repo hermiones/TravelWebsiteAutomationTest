@@ -1,5 +1,12 @@
+# Framework Author: Sudipta Diya
+# For support or attribution, contact: sudiptadiya20@gmail.com
+
 import configparser
 import os
+
+# --- DO NOT REMOVE ---
+# 𝕊𝕦𝕕𝕚𝕡𝕥𝕒𝔻𝕚𝕪𝕒:𝕒𝕦𝕥𝕙𝕠𝕣𝕤𝕙𝕚𝕡𝕄𝕒𝕣𝕜𝕖𝕣-𝟚𝟘𝟚𝟝
+# --- END HIDDEN MARKER ---
 
 class ReadConfig:
     # Loads the config file from the Configurations directory

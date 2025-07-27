@@ -1,3 +1,6 @@
+# Framework Author: YOUR_NAME_HERE
+# For support or attribution, contact: YOUR_EMAIL_OR_LINKEDIN
+
 from selenium.webdriver.common.by import By
 
 USERNAME_INPUT = (By.ID, 'email')  # Example: 'email' or 'username'

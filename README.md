@@ -59,17 +59,14 @@ Automate your end-to-end testing for the BlazeDemo travel website with a modern,
 3. **Install dependencies:**
    ```sh
    pip install -r requirements.txt
-   pip install allure-pytest
    ```
-4. **Edit `Configurations/config.ini`** with your test data (usernames, passwords, negative cases, email settings, etc.)
-5. **Run tests:**
+
+4. **Run tests and generate Allure report:**
    ```sh
    pytest --alluredir=Reports
+   allure generate --single-file Reports\index.html --clean
    ```
-6. **View Allure report:**
-   ```sh
-   allure serve Reports
-   ```
+   - The Allure HTML report will be available at `Reports/index.html`.
 
 ---
 
@@ -113,3 +110,36 @@ If you want to contribute to this framework, let's work together and make it eve
 If you have amazing ideas for automation, or want to collaborate on new features, let's connect!
 
 ---
+
+## 🧩 Data-Driven & Configurable
+
+This framework is fully **data-driven**. All test data—including valid, negative, edge, and special cases—is managed in a single, easy-to-edit `config.ini` file under `Configurations/`.
+
+- **How it works:**
+  - Test data for registration, login, and booking is never hardcoded. Instead, it is read at runtime from `config.ini` using utility methods in `Utilities/ReadProperties.py`.
+  - The framework uses Python’s `configparser` (with interpolation disabled) to safely parse all values, including those with special characters, unicode, or symbols.
+  - To add or update test scenarios, simply edit `config.ini`—no code changes required!
+
+**Example config entry:**
+```ini
+[REGISTER]
+valid_email = validuser@example.com
+weak_password = 12345
+symbols_password = !@#$%^&*()
+```
+
+**How to access in tests:**
+```python
+from Utilities.ReadProperties import ReadConfig
+email = ReadConfig.get_register_valid_email()
+password = ReadConfig.get_register_weak_password()
+```
+
+This approach makes the framework highly maintainable, scalable, and easy to extend for new scenarios or environments.
+
+---
+
+#
+# Framework Author: Sudipta Diya
+# For support or attribution, contact: sudiptadiya20@gmail.com
+#
